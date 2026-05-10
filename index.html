@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-wallet"></i>
+                    <h1>Finance Tracker</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="export-btn" id="exportBtn" title="Export to CSV">
+                        <i class="fas fa-download"></i>
+                        <span>Export CSV</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Summary Cards -->
+            <section class="summary-section">
+                <div class="summary-card budget-card">
+                    <div class="card-icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Budget</h3>
+                        <p class="amount" id="totalBudget">$0.00</p>
+                    </div>
+                </div>
+                <div class="summary-card expense-card">
+                    <div class="card-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total Expenses</h3>
+                        <p class="amount" id="totalExpenses">$0.00</p>
+                    </div>
+                </div>
+                <div class="summary-card balance-card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Remaining Balance</h3>
+                        <p class="amount" id="remainingBalance">$0.00</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Budget Warning -->
+            <div class="budget-warning" id="budgetWarning" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Warning: You have exceeded your budget!</span>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <!-- Budget Section -->
+                    <section class="budget-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-cog"></i> Set Budget</h2>
+                        </div>
+                        <form id="budgetForm" class="budget-form">
+                            <div class="form-group">
+                                <label for="budgetAmount">Monthly Budget ($)</label>
+                                <input type="number" id="budgetAmount" placeholder="Enter your monthly budget" min="0" step="0.01" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Set Budget
+                            </button>
+                        </form>
+                    </section>
+
+                    <!-- Expense Form -->
+                    <section class="expense-form-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-plus-circle"></i> Add Expense</h2>
+                        </div>
+                        <form id="expenseForm" class="expense-form">
+                            <div class="form-group">
+                                <label for="expenseTitle">Expense Title</label>
+                                <input type="text" id="expenseTitle" placeholder="e.g., Grocery shopping" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="expenseAmount">Amount ($)</label>
+                                <input type="number" id="expenseAmount" placeholder="0.00" min="0" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="expenseCategory">Category</label>
+                                <select id="expenseCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Food">Food</option>
+                                    <option value="Travel">Travel</option>
+                                    <option value="Shopping">Shopping</option>
+                                    <option value="Bills">Bills</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="expenseDate">Date</label>
+                                <input type="date" id="expenseDate" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add Expense
+                            </button>
+                        </form>
+                    </section>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <!-- Charts Section -->
+                    <section class="charts-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-chart-pie"></i> Expense Analytics</h2>
+                        </div>
+                        <div class="charts-grid">
+                            <div class="chart-container">
+                                <h3>Category Distribution</h3>
+                                <canvas id="pieChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h3>Monthly Spending</h3>
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Expense List Section -->
+            <section class="expense-list-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Expense List</h2>
+                </div>
+                
+                <!-- Search and Filter -->
+                <div class="search-filter-container">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search expenses by title...">
+                    </div>
+                    <div class="filter-box">
+                        <select id="categoryFilter">
+                            <option value="all">All Categories</option>
+                            <option value="Food">Food</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Expense Table -->
+                <div class="expense-table-container">
+                    <table class="expense-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Amount</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenseTableBody">
+                            <!-- Expenses will be dynamically added here -->
+                        </tbody>
+                    </table>
+                    <div class="no-expenses" id="noExpenses">
+                        <i class="fas fa-receipt"></i>
+                        <p>No expenses yet. Add your first expense!</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Action completed successfully!</span>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Expense</h3>
+                <button class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editExpenseForm" class="edit-form">
+                <input type="hidden" id="editExpenseId">
+                <div class="form-group">
+                    <label for="editTitle">Expense Title</label>
+                    <input type="text" id="editTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editAmount">Amount ($)</label>
+                    <input type="number" id="editAmount" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCategory">Category</label>
+                    <select id="editCategory" required>
+                        <option value="Food">Food</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Bills">Bills</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editDate">Date</label>
+                    <input type="date" id="editDate" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelEdit">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-wallet"></i>
+                        <h3>Finance Tracker</h3>
+                    </div>
+                    <p>Your personal expense and budget management solution. Track, analyze, and optimize your finances with ease.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#summary">Dashboard</a></li>
+                        <li><a href="#expenses">Expenses</a></li>
+                        <li><a href="#budget">Budget</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>Expense Tracking</li>
+                        <li>Budget Management</li>
+                        <li>Data Visualization</li>
+                        <li>CSV Export</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <div class="social-links">
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Personal Finance Tracker. All rights reserved. Built with <i class="fas fa-heart"></i> using HTML, CSS & JavaScript.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
