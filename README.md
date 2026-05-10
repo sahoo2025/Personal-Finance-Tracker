@@ -2,9 +2,6 @@
 
 A modern, fully responsive web application for tracking expenses and managing budgets. Built with pure HTML, CSS, and JavaScript (ES6+), this application provides a professional dashboard interface with real-time analytics and data visualization.
 
-![Finance Tracker](https://img.shields.io/badge/Version-1.0.0-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
-
 ## 🌟 Features
 
 ### Core Features
@@ -45,39 +42,6 @@ finance-tracker/
 ├── assets/
 │   └── images/            # Image assets (if needed)
 └── README.md              # Project documentation
-```
-
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- A modern web browser (Chrome, Firefox, Safari, Edge)
-- A local web server (optional, but recommended)
-
-### Steps
-
-1. **Clone or Download the Project**
-   ```bash
-   git clone <repository-url>
-   cd Personal-Finance-Tracker
-   ```
-
-2. **Open the Application**
-   - Simply open `index.html` in your web browser
-   - Or use a local server:
-     ```bash
-     # Using Python
-     python -m http.server 8000
-     
-     # Using Node.js (if you have http-server installed)
-     npx http-server
-     
-     # Using PHP (if you have XAMPP/WAMP)
-     # Place the project in htdocs/www and access via localhost
-     ```
-
-3. **Access the Application**
-   - If using a local server: `http://localhost:8000`
-   - If opening directly: Double-click `index.html`
 
 ## 📖 Usage Guide
 
@@ -281,6 +245,5 @@ This project demonstrates:
 
 ---
 
-**Built with ❤️ using pure HTML, CSS, and JavaScript**
+**Built By Suchitra Kumar Sahoo**
 
-*Last Updated: May 2026*
